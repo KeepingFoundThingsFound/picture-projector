@@ -31,3 +31,20 @@ interact('.draggable')
     }
   });
 
+  function editMode() {
+      var className;
+      var folders = document.getElementById('canvas').childNodes;
+
+      if(document.getElementById('edit_mode').checked) {
+        // folders = document.getElementsByClassName('folder');
+        className = 'folder draggable';
+      } else {
+        // folders = document.getElementsByClassName('folder draggable');
+        className = 'folder';
+      }
+
+      for(var i = 0; i < folders.length; i++) {
+          folders[i].className = className;
+        }
+  }
+
