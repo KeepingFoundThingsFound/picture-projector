@@ -34,13 +34,20 @@ interact('.draggable')
   function editMode() {
       var className;
       var folders = document.getElementById('canvas').childNodes;
+      var editButton = document.getElementById('edit_mode');
 
-      if(document.getElementById('edit_mode').checked) {
-        // folders = document.getElementsByClassName('folder');
+      // Check to see if the button is currently to set or disable,
+      // enables or disabled edit mode according to button data
+      if(editButton.getAttribute('data-editMode') == 'disabled') {
+        // Enable the editing of folders and reflect changes with button
         className = 'folder draggable';
+        editButton.setAttribute('data-editMode', 'enabled');
+        editButton.innerHTML = 'Disable Edit Mode';
       } else {
-        // folders = document.getElementsByClassName('folder draggable');
+        // Disable the editing of folders and reflect changes with button
         className = 'folder';
+        editButton.innerHTML = 'Enable Edit Mode';
+        editButton.setAttribute('data-editMode', 'disabled');
       }
 
       for(var i = 0; i < folders.length; i++) {
