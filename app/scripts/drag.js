@@ -1,5 +1,11 @@
 // target elements with the "draggable" class
 interact('.draggable')
+  .on('tap', function (event){
+    var target = event.target;
+    var urlInput = document.getElementById('url_input');
+    urlInput.value = parseImageURL(event.target.style.backgroundImage);
+  }) 
+
   .draggable({
     // enable inertial throwing
     inertia: true,
@@ -31,10 +37,16 @@ interact('.draggable')
     }
   });
 
+  // Returns the URL from the backgroundImage property of an element
+  function parseImageURL(input) {
+    return input;
+  }
+
   function editMode() {
       var className;
       var folders = document.getElementById('canvas').childNodes;
       var editButton = document.getElementById('edit_mode');
+      var urlInput = document.getElementById('url_input');
 
       // Check to see if the button is currently to set or disable,
       // enables or disabled edit mode according to button data
@@ -43,11 +55,20 @@ interact('.draggable')
         className = 'folder draggable';
         editButton.setAttribute('data-editMode', 'enabled');
         editButton.innerHTML = 'Disable Edit Mode';
+
+        // enable the url input
+        urlInput.disabled = false;
+        urlInput.setAttribute('placeholder', 'Click a folder to view/edit the URL');
       } else {
         // Disable the editing of folders and reflect changes with button
         className = 'folder';
         editButton.innerHTML = 'Enable Edit Mode';
         editButton.setAttribute('data-editMode', 'disabled');
+
+        // disable the url input and change text
+        urlInput.disabled = true;
+        urlInput.setAttribute('placeholder', 'Edit mode must be enabled to edit the background image of a folder');
+
       }
 
       for(var i = 0; i < folders.length; i++) {
