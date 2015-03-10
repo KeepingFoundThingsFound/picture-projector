@@ -31,6 +31,7 @@ module.exports = function(config) {
       'bower_components/item-mirror/item-mirror.js',
       'bower_components/angular-strap/dist/angular-strap.js',
       'bower_components/angular-strap/dist/angular-strap.tpl.js',
+      'bower_components/dropbox-build/dropbox.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',

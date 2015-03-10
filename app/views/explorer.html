@@ -1,3 +1,14 @@
+
+<h2>Fragment: {{mirror.displayName}}</h2>
+<div ng-show="mirror.displayName != 'Dropbox'">
+	<label>Display Name</label>
+	<input ng-model="mirror.displayName"
+		ng-model-options="{ getterSetter: true }"
+		type="text" />
+</div>
+<h1>Raw Association Code</h1>
+<pre>{{mirror.associations}}</pre>
+ 
 <div class="input-group">
 	<span class="input-group-btn">
 		<button class="btn btn-default" name="edit_mode" id="edit_mode" onclick="editMode()" data-editMode="disabled"/>Enable Edit Mode</button>
@@ -9,10 +20,6 @@
 	<!-- here's an example of a linked folder, it currently also goes to the link upon drop so that needs to be fixed.
 
 	<div class="folder draggable"><a href="http://google.com"><span class="link"></span></a></div> -->
-	
-	<div class="folder" style="background-image:url('images/folder.png');"><p>Photos</p></div>
-	<div class="folder" style="background-image:url('images/folder.png');"><p>Workspace</p></div>
-	<div class="folder" style="background-image:url('images/folder.png');"><p>Homework</p></div>
-	<div class="folder" style="background-image:url('images/folder.png');"><p>Turn-in</p></div>
-	<div class="folder" style="background-image:url('images/folder.png');"><p>INFO 320</p></div>
+	<div ng-repeat="assoc in associations" class="folder" style="background-image:url('images/folder.png');"><p>{{assoc.displayText | limitTo: 12}}</p></div>
+
 </div>
