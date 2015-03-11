@@ -53,8 +53,8 @@ angular.module('pictureProjectorApp')
         // item mirror methods with the namespace and the attribute.
         // 'namespace' should be replaced likely with the name of your app
         // 'key' should be replaced with the name of the attribute
-        get exampleNSAttr(){ return mirror.getAssociationNamespaceAttribute('key', guid, 'namespace'); },
-        set exampleNSAttr(val){ mirror.setAssociationNamespaceAttribute('key', val, guid, 'namespace'); }
+        get imageNSAttr(){ return mirror.getAssociationNamespaceAttribute('image', guid, 'pictureProjector'); },
+        set imageNSAttr(val){ mirror.setAssociationNamespaceAttribute('image', val, guid, 'pictureProjector'); }
       };
     }
 

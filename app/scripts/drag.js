@@ -44,7 +44,8 @@ interact('.draggable')
 
   function editMode() {
       var className;
-      var folders = document.getElementById('canvas').childNodes;
+      var click;
+      var folders = document.getElementById('canvas').children;
       var editButton = document.getElementById('edit_mode');
       var urlInput = document.getElementById('url_input');
 
@@ -53,6 +54,7 @@ interact('.draggable')
       if(editButton.getAttribute('data-editMode') == 'disabled') {
         // Enable the editing of folders and reflect changes with button
         className = 'folder draggable';
+        click = "";
         editButton.setAttribute('data-editMode', 'enabled');
         editButton.innerHTML = 'Disable Edit Mode';
 
@@ -62,6 +64,7 @@ interact('.draggable')
       } else {
         // Disable the editing of folders and reflect changes with button
         className = 'folder';
+        click = "navigate(assoc.guid)";
         editButton.innerHTML = 'Enable Edit Mode';
         editButton.setAttribute('data-editMode', 'disabled');
 
@@ -73,6 +76,7 @@ interact('.draggable')
 
       for(var i = 0; i < folders.length; i++) {
           folders[i].className = className;
+          folders[i].setAttribute('ng-click', click);
         }
   }
 
