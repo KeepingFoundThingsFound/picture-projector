@@ -12,22 +12,26 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
  * # ExplorerCtrl
  * Controller of the pictureProjectorApp
  */
- angular.module('pictureProjectorApp')
- .controller('ExplorerCtrl', function ($scope, itemMirror) {
+ var app = angular.module('pictureProjectorApp');
+
+
+ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
 
     $scope.editMode = false;
-    setText();
+    setText(+ $scope.editMode);
 
     // Toggle edit mode, change button text
     $scope.toggleEdit = function () {
       $scope.editMode = !$scope.editMode;
-      setText();
+      setText(+ $scope.editMode);
     }
 
-    function setText () {
-      $scope.placeholderText = PLACEHOLDERTEXT[+ $scope.editMode];
-      $scope.editButtonText = EDITBUTTONTEXT[+ $scope.editMode];
-      $scope.folderClass = FOLDERCLASSES[+ $scope.editMode];
+    // Sets the text and class of edit mode related items
+    function setText (num) {
+      $scope.placeholderText = PLACEHOLDERTEXT[num];
+      $scope.editButtonText = EDITBUTTONTEXT[num];
+      $scope.folderClass = FOLDERCLASSES[num];
+      $scope.imageURLText = "";
     }
 
 
@@ -46,6 +50,8 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
         getGroupingItems();
       }
 
+      // Organizes the associations into two groups/arrays, 
+      // groupingItems and notGroupingItems.
       function getGroupingItems() {
         $scope.groupingItems = [];
         $scope.notGroupingItems = [];
@@ -64,12 +70,12 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
         then(assocScopeUpdate);
       };
 
-      $scope.handleClick = function(guid) {
+      $scope.handleClick = function(assoc) {
         var editMode = $scope.editMode;
           if(editMode) {
-            $scope.imageURLText = 'Show image url namespace for: ' + guid;
+            $scope.imageURLText = assoc.imageNSAttr;
           } else {
-            navigate(guid);
+            navigate(assoc.guid);
           }
       }
 
@@ -90,3 +96,15 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
       }
     });
 });
+
+// // Directive to set the background image via css
+// app.directive('backImg', function(){
+//     return function(scope, element, attrs){
+//         attrs.$observe('backImg', function(value) {
+//             element.css({
+//                 'background-image': 'url(' + value +')',
+//                 'background-size' : 'cover'
+//             });
+//         });
+//     };
+// });

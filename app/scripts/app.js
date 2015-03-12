@@ -11,6 +11,7 @@
 angular
   .module('pictureProjectorApp', [
     'ngAnimate',
+    'ng-context-menu',
     'ngCookies',
     'ngResource',
     'ngRoute',
