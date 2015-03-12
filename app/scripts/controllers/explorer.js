@@ -67,7 +67,7 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
       $scope.handleClick = function(guid) {
         var editMode = $scope.editMode;
           if(editMode) {
-            alert('Show image url namespace for: ' + guid);
+            $scope.imageURLText = 'Show image url namespace for: ' + guid;
           } else {
             navigate(guid);
           }

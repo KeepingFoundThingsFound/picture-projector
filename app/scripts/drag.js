@@ -1,11 +1,5 @@
 // target elements with the "draggable" class
 interact('.draggable')
-  .on('tap', function (event){
-    var target = event.target;
-    var urlInput = document.getElementById('url_input');
-    urlInput.value = parseImageURL(event.target.style.backgroundImage);
-  }) 
-
   .draggable({
     // enable inertial throwing
     inertia: true,
