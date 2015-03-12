@@ -1,5 +1,10 @@
 'use strict';
 
+var PLACEHOLDERTEXT = ["Edit mode must be enabled to edit the background image of a folder", "Click a folder to view/edit the URL"];
+var EDITBUTTONTEXT = ["Enable Edit Mode", "Edit Mode Currently Enabled"];
+var FOLDERCLASSES = ["folder", "folder draggable"];
+
+
 /**
  * @ngdoc function
  * @name pictureProjectorApp.controller:ExplorerCtrl
@@ -9,6 +14,23 @@
  */
  angular.module('pictureProjectorApp')
  .controller('ExplorerCtrl', function ($scope, itemMirror) {
+
+    $scope.editMode = false;
+    setText();
+
+    // Toggle edit mode, change button text
+    $scope.toggleEdit = function () {
+      $scope.editMode = !$scope.editMode;
+      setText();
+    }
+
+    function setText () {
+      $scope.placeholderText = PLACEHOLDERTEXT[+ $scope.editMode];
+      $scope.editButtonText = EDITBUTTONTEXT[+ $scope.editMode];
+      $scope.folderClass = FOLDERCLASSES[+ $scope.editMode];
+    }
+
+
   	// starts everything up after dropbox loads
   	var init = itemMirror.initialize;
   	init.then(function() {
@@ -42,7 +64,18 @@
         then(assocScopeUpdate);
       };
 
-      $scope.navigate = function(guid) {
+      $scope.handleClick = function(guid) {
+        var editMode = $scope.editMode;
+          if(editMode) {
+            alert('Show image url namespace for: ' + guid);
+          } else {
+            navigate(guid);
+          }
+      }
+
+      $scope.navigate = navigate;
+
+      function navigate(guid) {
         itemMirror.navigateMirror(guid).
         then(assocScopeUpdate);
       };

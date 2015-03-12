@@ -9,12 +9,14 @@
 <h1>Raw Association Code</h1>
 <pre>{{mirror.associations}}</pre>
 
+<h1>Testing</h1>
+<pre>{{editMode}}</pre>
 <div class="form-group">
-	<input type="text" class="form-control" id="url_input" placeholder="Edit mode must be enabled to edit the background image of a folder" disabled/>
+	<input type="text" class="form-control" id="url_input" placeholder="{{placeholderText}}" ng-disabled="!editMode"/>
 </div>
 <div class="btn-group">
 	<button class="btn btn-default" name="navigate_up" ng-click="previous()"><span class="glyphicon glyphicon-arrow-left"></span></button>
-	<button class="btn btn-default" name="edit_mode" id="edit_mode" onclick="editMode()" data-editMode="disabled"/>Enable Edit Mode</button>
+	<button class="btn btn-default" name="edit_mode" id="edit_mode" ng-click="toggleEdit()" data-editMode="disabled"/>{{editButtonText}}</button>
 
 
 </div>
@@ -24,8 +26,8 @@
 	<!-- here's an example of a linked folder, it currently also goes to the link upon drop so that needs to be fixed.
 
 	<div class="folder draggable"><a href="http://google.com"><span class="link"></span></a></div> -->
-	<div ng-click="navigate(assoc.guid)" ng-repeat="assoc in groupingItems" class="folder" style="background-image:url('images/folder.png')"><p>{{assoc.displayText | limitTo: 12}}</p></div>
+	<div ng-click="handleClick(assoc.guid)" ng-repeat="assoc in groupingItems" ng-class="folderClass" style="background-image:url('images/folder.png')"><p>{{assoc.displayText | limitTo: 12}}</p></div>
 
-	<div ng-click="navigate(assoc.guid)" ng-repeat="assoc in notGroupingItems" class="folder" style="background-image:url('images/file.gif')"><p>{{assoc.displayText | limitTo: 12}}</p></div>
+	<div ng-click="handleClick()" ng-repeat="assoc in notGroupingItems" ng-class="folderClass" style="background-image:url('images/file.gif')"><p>{{assoc.displayText | limitTo: 12}}</p></div>
 
 </div>
