@@ -21,7 +21,7 @@
       // updates don't get propogated to the front end.
       function assocScopeUpdate() {
         $scope.associations = itemMirror.associations;
-        $scope.groupingItems = getGroupingItems();
+        getGroupingItems();
       }
 
       function getGroupingItems() {
@@ -44,6 +44,11 @@
 
       $scope.navigate = function(guid) {
         itemMirror.navigateMirror(guid).
+        then(assocScopeUpdate);
+      };
+
+      $scope.previous = function() {
+        itemMirror.previous().
         then(assocScopeUpdate);
       };
 
