@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name pictureProjectorApp.itemMirror
+ * @name itemMirrorAngularDemoApp.itemMirror
  * @description
  * # itemMirror
  *
@@ -42,6 +42,13 @@ angular.module('pictureProjectorApp')
     // that they can be defined outside of this file, allowing a separation of
     // core item mirror attributes and namespace attributes.
     function assocWrapper(guid) {
+
+      var result = mirror.getAssociationNamespaceAttribute('tags', guid, 'picture-projector');
+      var tags = result ? JSON.parse(result) : {};
+      function saveTags() {
+        mirror.setAssociationNamespaceAttribute('tags', JSON.stringify(tags), guid, 'picture-projector');
+      }
+
       return {
         guid: guid,
         get displayText(){ return mirror.getAssociationDisplayText(guid); },
@@ -49,12 +56,28 @@ angular.module('pictureProjectorApp')
         localItem: mirror.getAssociationLocalItem(guid),
         associatedItem: mirror.getAssociationAssociatedItem(guid),
         isGrouping: mirror.isAssociationAssociatedItemGrouping(guid),
-        // This shows how to define a custom rw attribute. It simply wraps the
-        // item mirror methods with the namespace and the attribute.
-        // 'namespace' should be replaced likely with the name of your app
-        // 'key' should be replaced with the name of the attribute
-        get imageNSAttr(){ return mirror.getAssociationNamespaceAttribute('image', guid, 'pictureProjector'); },
-        set imageNSAttr(val){ mirror.setAssociationNamespaceAttribute('image', val, guid, 'pictureProjector'); }
+        isPhantom: mirror.isAssociationPhantom(guid),
+
+        // Simple plain text attribute that stores an image for a given association
+        get customPicture(){ return mirror.getAssociationNamespaceAttribute('picture', guid, 'picture-projector'); },
+        set customPicture(picture){ mirror.setAssociationNamespaceAttribute('picture', picture, guid, 'picture-projector'); },
+
+        // These functions are all dealing with the private variable tags. This gives us a way to add,
+        // delete, and list tags with an attribute. Internally these are represented as JSON and then these
+        // methods are given to the associations to allow for easy manipulation as a directive.
+        addTag: function(tag) {
+          tags[tag] = true;
+          saveTags();
+        },
+
+        deleteTag: function(tag) {
+          delete tags[tag];
+          saveTags();
+        },
+
+        listTags: function() {
+          return Object.keys(tags);
+        }
       };
     }
 

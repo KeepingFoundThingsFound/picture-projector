@@ -34,6 +34,15 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
       $scope.imageURLText = "";
     }
 
+    // Parses the URL for background images
+    $scope.parseURL = function(url) {
+      var result;
+
+      if(!url) {
+        var url = 'images/folder.png';
+      }
+      return 'url(' + url + ')';
+    }
 
   	// starts everything up after dropbox loads
   	var init = itemMirror.initialize;
@@ -74,10 +83,11 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
         var editMode = $scope.editMode;
           if(editMode) {
             $scope.imageURLText = assoc.imageNSAttr;
+            $scope.select(assoc);
           } else {
             navigate(assoc.guid);
           }
-      }
+      };
 
       $scope.navigate = navigate;
 
@@ -91,20 +101,98 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
         then(assocScopeUpdate);
       };
 
+      $scope.save = function() {
+        itemMirror.save().
+        then(assocScopeUpdate);
+      };
+
+      $scope.refresh = function() {
+        itemMirror.refresh().
+        then(assocScopeUpdate);
+      };
+
       $scope.isGrouping = function(assoc) {
         return assoc.isGrouping;
-      }
-    });
-});
+      };
 
-// // Directive to set the background image via css
-// app.directive('backImg', function(){
-//     return function(scope, element, attrs){
-//         attrs.$observe('backImg', function(value) {
-//             element.css({
-//                 'background-image': 'url(' + value +')',
-//                 'background-size' : 'cover'
-//             });
-//         });
-//     };
-// });
+      // Only one association is ever selected at a time. It has the boolean
+      // selected property, to allow for unique styling
+      $scope.select = function(assoc) {
+        if ($scope.selectedAssoc) {
+          $scope.selectedAssoc.selected = false;
+        }
+        $scope.selectedAssoc = assoc;
+        $scope.selectedAssoc.selected = true;
+      };
+
+      // Phantom Creation Section
+      $scope.phantomRequest = {
+        displayText: null,
+        itemURI: null,
+        localItemRequested: false
+      };
+
+      $scope.createPhantom = function() {
+        itemMirror.createAssociation($scope.phantomRequest).
+        then(assocScopeUpdate);
+      };
+
+      // Folder Creation Section
+      $scope.folderRequest = {
+        displayText: null,
+        localItem: null,
+        isGroupingItem: true
+      };
+
+      $scope.createFolder = function() {
+        itemMirror.createAssociation($scope.folderRequest).
+        then(assocScopeUpdate);
+      };
+
+      // default section for our editing panel
+      $scope.editSection = 'assoc-editor';
+
+      // Function used to show display text succinctly
+      $scope.matchFirstLn = function(str) {
+        var first = /.*/;
+        return first.exec(str)[0];
+      };
+    });
+
+// target elements with the "draggable" class
+interact('.draggable')
+  .draggable({
+    // enable inertial throwing
+    inertia: true,
+    // keep the element within the area of it's parent
+    restrict: {
+      restriction: "parent",
+      endOnly: true,
+      elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+    },
+
+    // call this function on every dragmove event
+    onmove: function (event) {
+      var target = event.target,
+          // keep the dragged position in the data-x/data-y attributes
+          x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+          y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+      // translate the element
+      target.style.webkitTransform =
+      target.style.transform =
+        'translate(' + x + 'px, ' + y + 'px)';
+
+      // update the position attributes
+      target.setAttribute('data-x', x);
+      target.setAttribute('data-y', y);
+    },
+    // call this function on every dragend event
+    onend: function (event) {
+      var textEl = event.target.querySelector('p');
+
+      textEl.textContent = event.x;
+       
+    }
+  });
+});
