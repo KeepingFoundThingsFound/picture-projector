@@ -43,10 +43,10 @@ angular.module('pictureProjectorApp')
     // core item mirror attributes and namespace attributes.
     function assocWrapper(guid) {
 
-      var result = mirror.getAssociationNamespaceAttribute('tags', guid, 'picture-projector');
-      var tags = result ? JSON.parse(result) : {};
-      function saveTags() {
-        mirror.setAssociationNamespaceAttribute('tags', JSON.stringify(tags), guid, 'picture-projector');
+      var result = mirror.getAssociationNamespaceAttribute('cords', guid, 'picture-projector');
+      var cords = result ? JSON.parse(result) : {};
+      function saveCords() {
+        mirror.setAssociationNamespaceAttribute('cords', JSON.stringify(tags), guid, 'picture-projector');
       }
 
       return {
@@ -62,21 +62,28 @@ angular.module('pictureProjectorApp')
         get customPicture(){ return mirror.getAssociationNamespaceAttribute('picture', guid, 'picture-projector'); },
         set customPicture(picture){ mirror.setAssociationNamespaceAttribute('picture', picture, guid, 'picture-projector'); },
 
+        get xCord(){ return mirror.getAssociationNamespaceAttribute('xCord', guid, 'picture-projector'); },
+        set xCord(newCord){ mirror.setAssociationNamespaceAttribute('xCord', newCord, guid, 'picture-projector'); },
+
+        get yCord(){ return mirror.getAssociationNamespaceAttribute('yCord', guid, 'picture-projector'); },
+        set yCord(newCord){ mirror.setAssociationNamespaceAttribute('yCord', newCord, guid, 'picture-projector'); },
+
+
         // These functions are all dealing with the private variable tags. This gives us a way to add,
         // delete, and list tags with an attribute. Internally these are represented as JSON and then these
         // methods are given to the associations to allow for easy manipulation as a directive.
-        addTag: function(tag) {
-          tags[tag] = true;
+        addCord: function(cord) {
+          cords[cord] = true;
           saveTags();
         },
 
-        deleteTag: function(tag) {
+        deleteCord: function(cord) {
           delete tags[tag];
           saveTags();
         },
 
-        listTags: function() {
-          return Object.keys(tags);
+        listCords: function() {
+          return Object.keys(cords);
         }
       };
     }
