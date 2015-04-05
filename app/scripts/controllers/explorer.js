@@ -21,6 +21,13 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
   $scope.editMode = false;
   setText(+ $scope.editMode);
 
+  // Set to false after printing associations for the first time
+  var firstTransform = true;
+
+  $scope.repeatEnd = function() {
+    firstTransform = false;
+  }
+
   // Toggle edit mode, change button text
   $scope.toggleEdit = function () {
     $scope.editMode = !$scope.editMode;
@@ -89,6 +96,27 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
       }
     };
 
+    $scope.handleAssocStyle = function(assoc) {
+      var result = new Object();
+
+      result['background-image'] = $scope.parseURL(assoc.customPicture);
+      result['position'] = 'relative';
+
+      // Case for placing items with custom cords for the first time
+      if(assoc.xCord && assoc.yCord && !assoc.moved) {
+        if(!assoc.firstY) {
+          assoc.firstY = assoc.yCord;
+          assoc.firstX = assoc.xCord;
+        }
+
+        result['left'] = assoc.firstX + 'px';
+        result['top'] = assoc.firstY + 'px';
+        result['position'] = 'absolute';
+      }
+
+      return result;
+    };
+
     $scope.deleteAssoc = function(guid) {
       itemMirror.deleteAssociation(guid).
       then(assocScopeUpdate);
@@ -125,7 +153,7 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
     };
 
     $scope.checkPosition = function(assoc) {
-      if(assoc.xCord && assoc.yCord) {
+      if(assoc.xCord && assoc.yCord && firstTransform) {
         return "absolute";
       } else {
         return "relative";
@@ -160,6 +188,8 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
 
           $scope.selectedAssoc.xCord = rect.left;
           $scope.selectedAssoc.yCord = rect.top;
+
+          $scope.selectedAssoc.moved = true;
 
           // $scope.save();
         }
@@ -202,3 +232,4 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
 }
 
 });
+
