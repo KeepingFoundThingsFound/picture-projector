@@ -1,16 +1,11 @@
 
-<h2>Fragment: {{mirror.displayName}}</h2>
+<h2>{{mirror.displayName}}</h2>
 <div ng-show="mirror.displayName != 'Dropbox'">
 	<label>Display Name</label>
 	<input ng-model="mirror.displayName"
 	ng-model-options="{ getterSetter: true }"
 	type="text" />
 </div>
-<h1>Raw Association Code</h1>
-<pre>{{mirror.associations}}</pre>
-
-<h1>Testing</h1>
-<pre>{{selectedAssoc}}</pre>
 <div class="form-group">
 	<input type="text" class="form-control" id="url_input" placeholder="{{placeholderText}}" ng-disabled="!editMode" ng-model="selectedAssoc.customPicture" ng-model-options="{ getterSetter: true}"/>
 </div>
