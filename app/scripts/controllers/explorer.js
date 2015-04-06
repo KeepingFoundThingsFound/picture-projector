@@ -28,8 +28,12 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
     firstTransform = false;
   }
 
-  // Toggle edit mode, change button text
+  // Toggle edit mode, change button text, saves changes
   $scope.toggleEdit = function () {
+    // Save our changes we made to ItemMirror
+    if($scope.editMode) {
+      $scope.save();
+    }
     $scope.editMode = !$scope.editMode;
     setText(+ $scope.editMode);
   }
@@ -86,31 +90,33 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
       then(assocScopeUpdate);
     };
 
-    $scope.handleFolderClick = function(assoc) {
+    $scope.handleAssocNavigate = function(assoc) {
       var editMode = $scope.editMode;
-      if(editMode) {
-        $scope.imageURLText = assoc.imageNSAttr;
-        $scope.select(assoc);
-      } else {
+      if(!editMode) {
         $scope.navigate(assoc.guid);
       }
     };
 
+    $scope.handleAssocSelect = function(assoc) {
+        $scope.imageURLText = assoc.customPicture;
+        $scope.select(assoc);
+    }
+
     $scope.handleAssocStyle = function(assoc) {
       var result = new Object();
 
-      result['background-image'] = $scope.parseURL(assoc.customPicture);
+      // result['background-image'] = $scope.parseURL(assoc.customPicture);
       result['position'] = 'relative';
 
       // Case for placing items with custom cords for the first time
-      if(assoc.xCord && assoc.yCord && !assoc.moved) {
-        if(!assoc.firstY) {
-          assoc.firstY = assoc.yCord;
-          assoc.firstX = assoc.xCord;
-        }
+      if(assoc.xCord && assoc.yCord) {
+        // if(!assoc.firstY) {
+        //   assoc.firstY = assoc.yCord;
+        //   assoc.firstX = assoc.xCord;
+        // }
 
-        result['left'] = assoc.firstX + 'px';
-        result['top'] = assoc.firstY + 'px';
+        result['left'] = assoc.xCord + 'px';
+        result['top'] = assoc.yCord + 'px';
         result['position'] = 'absolute';
       }
 
@@ -231,5 +237,17 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
     return { top: Math.round(top), left: Math.round(left) }
 }
 
+});
+
+app.directive('backImg', function(){
+    return function(scope, element, attrs){
+        attrs.$observe('backImg', function(value) {
+          if(value == "") { value = 'images/folder.png'};
+            element.css({
+                'background-image': 'url(' + value +')',
+                'background-size' : 'cover'
+            });
+        });
+    };
 });
 
