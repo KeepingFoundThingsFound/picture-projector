@@ -1,23 +1,17 @@
 
 <h2>{{mirror.displayName}}</h2>
-<div ng-show="mirror.displayName != 'Dropbox'">
-	<label>Display Name</label>
-	<input ng-model="mirror.displayName"
-	ng-model-options="{ getterSetter: true }"
-	type="text" />
-</div>
 <div class="form-group">
 	<input type="text" class="form-control" id="url_input" placeholder="{{placeholderText}}" ng-disabled="!editMode" ng-model="selectedAssoc.customPicture" ng-model-options="{ getterSetter: true}"/>
 </div>
-<div class="btn-group">
-	<button class="btn btn-default" name="navigate_up" ng-click="previous()"><span class="glyphicon glyphicon-arrow-left"></span></button>
-	<button class="btn btn-default" name="edit_mode" id="edit_mode" ng-click="toggleEdit()" data-editMode="disabled"/>{{editButtonText}}</button>
-	<button ng-if="editMode" ng-click="save()" class="btn btn-success">Save</button>
+<div class="form-group">
+	<button class="btn btn-primary btn-lg" name="navigate_up" ng-click="previous()"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+	<button class="btn btn-default btn-lg" name="edit_mode" id="edit_mode" ng-click="toggleEdit()" data-editMode="disabled"/>{{editButtonText}} <span class="glyphicon glyphicon-edit"></button>
+	<button ng-if="editMode" ng-click="save()" class="btn btn-success btn-lg">Save <span class="glyphicon glyphicon-save"></button>
 
 
 </div>
 
-
+<div growl></div>
 <div id="canvas">
 	<div ng-repeat="assoc in groupingItems" back-img="{{assoc.customPicture}}" repeat-end="repeatEnd()" data-target="menu-{{ $index }}" ng-mousedown="handleAssocSelect(assoc)" ng-click="handleAssocNavigate(assoc)" ng-class="folderClass" ng-style="::handleAssocStyle(assoc)"><p>{{assoc.displayText | limitTo: 12}}</p>
 

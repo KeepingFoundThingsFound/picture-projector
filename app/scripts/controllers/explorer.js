@@ -1,7 +1,7 @@
 'use strict';
 
 var PLACEHOLDERTEXT = ["Edit mode must be enabled to edit the background image of a folder", "Click a folder to view/edit the URL"];
-var EDITBUTTONTEXT = ["Enable Edit Mode", "Edit Mode Currently Enabled"];
+var EDITBUTTONTEXT = ["Edit", "Edit Mode Currently Enabled"];
 var FOLDERCLASSES = ["folder", "folder draggable"];
 
 
@@ -14,8 +14,15 @@ var FOLDERCLASSES = ["folder", "folder draggable"];
 */
 var app = angular.module('pictureProjectorApp');
 
+// Sets the default configuration for growl messages
+app.config(['growlProvider', function (growlProvider) {
+  growlProvider.globalTimeToLive(3000);
+  growlProvider.globalDisableCountDown(true);
+  growlProvider.onlyUniqueMessages(false);
+}]);
 
-app.controller('ExplorerCtrl', function ($scope, itemMirror) {
+// Main controller for the explorer app
+app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
   // Initialize edit mode and set the default text 
   $scope.editMode = false;
@@ -26,6 +33,12 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
 
   $scope.repeatEnd = function() {
     firstTransform = false;
+  }
+
+
+  function savedGrowl() {
+    var config = {};
+     growl.success("Changes saved.", config);
   }
 
   // Toggle edit mode, change button text, saves changes
@@ -85,11 +98,13 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
       }
     }
 
+    // Navigates to the requested guid
     $scope.navigate = function(guid) {
       itemMirror.navigateMirror(guid).
       then(assocScopeUpdate);
     };
 
+    // Checks to see if edit mode is disabled before navigating
     $scope.handleAssocNavigate = function(assoc) {
       var editMode = $scope.editMode;
       if(!editMode) {
@@ -97,11 +112,13 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
       }
     };
 
+    // Selects the sent association to be later edited
     $scope.handleAssocSelect = function(assoc) {
         $scope.imageURLText = assoc.customPicture;
         $scope.select(assoc);
     }
 
+    // Handles the placement styling of the different associations
     $scope.handleAssocStyle = function(assoc) {
       var result = new Object();
 
@@ -114,7 +131,6 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
         //   assoc.firstY = assoc.yCord;
         //   assoc.firstX = assoc.xCord;
         // }
-
         result['left'] = assoc.xCord + 'px';
         result['top'] = assoc.yCord + 'px';
         result['position'] = 'absolute';
@@ -123,27 +139,34 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
       return result;
     };
 
+    // Deletes the given association
     $scope.deleteAssoc = function(guid) {
       itemMirror.deleteAssociation(guid).
       then(assocScopeUpdate);
     };
 
   
+    // Navigates the previously called assocation
+    // Always the parent in our case
     $scope.previous = function() {
       itemMirror.previous().
       then(assocScopeUpdate);
     };
 
+    // Saves the current associations and their attributes
     $scope.save = function() {
       itemMirror.save().
-      then(assocScopeUpdate);
+      then(assocScopeUpdate).
+      then(savedGrowl());
     };
 
+    // Refreshes the itemMirror object
     $scope.refresh = function() {
       itemMirror.refresh().
       then(assocScopeUpdate);
     };
 
+    // Checks if the association is a grouping object (folder) or not
     $scope.isGrouping = function(assoc) {
       return assoc.isGrouping;
     };
@@ -158,6 +181,13 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
       $scope.selectedAssoc.selected = true;
     };
 
+    // Sets the CSS position attribute to relative if an association 
+    // doesn't have a custom x or y coordinate.
+
+    // There is a special case of an association being transformed (dragged) during this
+    // session. We let interact.js handle the transformations and simply store the
+    // new coordinates. Next refresh we will place the association at the new
+    // coordinates.
     $scope.checkPosition = function(assoc) {
       if(assoc.xCord && assoc.yCord && firstTransform) {
         return "absolute";
@@ -166,6 +196,7 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
       }
     };
 
+    // INTERACT.JS - draggable related code
     // target elements with the "draggable" class
     interact('.draggable')
       .draggable({
@@ -197,7 +228,7 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
 
           $scope.selectedAssoc.moved = true;
 
-          // $scope.save();
+          $scope.save();
         }
       });
 
@@ -239,6 +270,7 @@ app.controller('ExplorerCtrl', function ($scope, itemMirror) {
 
 });
 
+// Custom directive to set the background image of an association.
 app.directive('backImg', function(){
     return function(scope, element, attrs){
         attrs.$observe('backImg', function(value) {

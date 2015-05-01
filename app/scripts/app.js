@@ -13,6 +13,7 @@ angular
     'ngAnimate',
     'ng-context-menu',
     'angular-loading-bar',
+    'angular-growl',
     'ngCookies',
     'ngResource',
     'ngRoute',

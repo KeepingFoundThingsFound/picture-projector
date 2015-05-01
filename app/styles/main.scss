@@ -114,6 +114,11 @@ Drag and drop file explorer
   cursor: pointer; cursor: hand;
 }
 
+.folder:active { 
+
+  background: blue;
+}
+
 .folder p {
   margin-top: 43px;
   text-align: center;

@@ -34,6 +34,7 @@ module.exports = function(config) {
       'bower_components/dropbox-build/dropbox.js',
       'bower_components/ng-context-menu/dist/ng-context-menu.js',
       'bower_components/angular-loading-bar/build/loading-bar.js',
+      'bower_components/angular-growl-v2/build/angular-growl.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
