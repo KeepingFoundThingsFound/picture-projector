@@ -90,6 +90,7 @@ body {
   }
 }
 
+
 /**
 Drag and drop file explorer
 **/
@@ -112,11 +113,6 @@ Drag and drop file explorer
   margin: 0;
   padding: 0;
   cursor: pointer; cursor: hand;
-}
-
-.folder:active { 
-
-  background: blue;
 }
 
 .folder p {

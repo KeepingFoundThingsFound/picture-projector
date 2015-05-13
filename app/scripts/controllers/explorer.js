@@ -1,10 +1,5 @@
 'use strict';
 
-var PLACEHOLDERTEXT = ["Edit mode must be enabled to edit the background image of a folder", "Click a folder to view/edit the URL"];
-var EDITBUTTONTEXT = ["Edit", "Edit Mode Currently Enabled"];
-var FOLDERCLASSES = ["folder", "folder draggable"];
-
-
 /**
 * @ngdoc function
 * @name pictureProjectorApp.controller:ExplorerCtrl
@@ -24,10 +19,6 @@ app.config(['growlProvider', function (growlProvider) {
 // Main controller for the explorer app
 app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
-  // Initialize edit mode and set the default text 
-  $scope.editMode = false;
-  setText(+ $scope.editMode);
-
   // Set to false after printing associations for the first time
   var firstTransform = true;
 
@@ -41,23 +32,6 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
      growl.success("Changes saved.", config);
   }
 
-  // Toggle edit mode, change button text, saves changes
-  $scope.toggleEdit = function () {
-    // Save our changes we made to ItemMirror
-    if($scope.editMode) {
-      $scope.save();
-    }
-    $scope.editMode = !$scope.editMode;
-    setText(+ $scope.editMode);
-  }
-
-  // Sets the text and class of edit mode related items
-  function setText (num) {
-    $scope.placeholderText = PLACEHOLDERTEXT[num];
-    $scope.editButtonText = EDITBUTTONTEXT[num];
-    $scope.folderClass = FOLDERCLASSES[num];
-    $scope.imageURLText = "";
-  }
 
   // Parses the URL for background images
   $scope.parseURL = function(url) {
@@ -102,14 +76,6 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
     $scope.navigate = function(guid) {
       itemMirror.navigateMirror(guid).
       then(assocScopeUpdate);
-    };
-
-    // Checks to see if edit mode is disabled before navigating
-    $scope.handleAssocNavigate = function(assoc) {
-      var editMode = $scope.editMode;
-      if(!editMode) {
-        $scope.navigate(assoc.guid);
-      }
     };
 
     // Selects the sent association to be later edited
@@ -209,6 +175,8 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
           elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
 
+
+
         // call this function on every dragmove event
         onmove: dragMoveListener,
         // call this function on every dragend event
@@ -230,6 +198,16 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
           $scope.save();
         }
+      })
+
+      // Handles a click on the folder, navigates to the 
+      // folders guid, shows the loading spinner
+      .on('tap', function (event) {
+        var guid = event.target.getAttribute('data-guid');
+        if(event.button != 2) {
+          $scope.navigate(guid);
+        }
+        
       });
 
       function dragMoveListener (event) {
