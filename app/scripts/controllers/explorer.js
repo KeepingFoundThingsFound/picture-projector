@@ -29,7 +29,7 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
   function savedGrowl() {
     var config = {};
-     growl.success("Changes saved.", config);
+    growl.success("Changes saved.", config);
   }
 
 
@@ -92,7 +92,7 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
       result['position'] = 'relative';
 
       // Case for placing items with custom cords for the first time
-      if(assoc.xCord && assoc.yCord) {
+      if(assoc.xCord || assoc.yCord) {
         // if(!assoc.firstY) {
         //   assoc.firstY = assoc.yCord;
         //   assoc.firstX = assoc.xCord;
@@ -122,8 +122,8 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
     // Saves the current associations and their attributes
     $scope.save = function() {
       itemMirror.save().
-      then(assocScopeUpdate).
-      then(savedGrowl());
+      // then(assocScopeUpdate).
+      then(savedGrowl);
     };
 
     // Refreshes the itemMirror object
@@ -167,11 +167,11 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
     interact('.draggable')
       .draggable({
         // enable inertial throwing
-        inertia: true,
+        inertia: false,
         // keep the element within the area of it's parent
         restrict: {
           restriction: "parent",
-          endOnly: true,
+          endOnly: false,
           elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
 
