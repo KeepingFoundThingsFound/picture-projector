@@ -68,6 +68,8 @@ angular.module('pictureProjectorApp')
         get yCord(){ return mirror.getAssociationNamespaceAttribute('yCord', guid, 'picture-projector'); },
         set yCord(newCord){ mirror.setAssociationNamespaceAttribute('yCord', newCord, guid, 'picture-projector'); },
 
+        get zIndex(){ return mirror.getAssociationNamespaceAttribute('zIndex', guid, 'picture-projector'); },
+        set zIndex(newIndex){ mirror.setAssociationNamespaceAttribute('zIndex', newIndex, guid, 'picture-projector'); },
 
         // These functions are all dealing with the private variable tags. This gives us a way to add,
         // delete, and list tags with an attribute. Internally these are represented as JSON and then these

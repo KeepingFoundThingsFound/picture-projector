@@ -21,26 +21,24 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
   // Set to false after printing associations for the first time
   var firstTransform = true;
-
   $scope.repeatEnd = function() {
     firstTransform = false;
-  }
+  };
 
 
   function savedGrowl() {
     var config = {};
-    growl.success("Changes saved.", config);
+    growl.success('Changes saved.', config);
   }
-
 
   // Parses the URL for background images
   $scope.parseURL = function(url) {
     var result;
     if(!url) {
-      var url = 'images/folder.png';
+      url = 'images/folder.png';
     }
     return 'url(' + url + ')';
-  }
+  };
 
   // starts everything up after dropbox loads
   var init = itemMirror.initialize;
@@ -74,15 +72,14 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
     // Navigates to the requested guid
     $scope.navigate = function(guid) {
-      itemMirror.navigateMirror(guid).
-      then(assocScopeUpdate);
+		itemMirror.navigateMirror(guid).
+		then(assocScopeUpdate);
     };
 
     // Selects the sent association to be later edited
     $scope.handleAssocSelect = function(assoc) {
-        $scope.imageURLText = assoc.customPicture;
         $scope.select(assoc);
-    }
+    };
 
     // Handles the placement styling of the different associations
     $scope.handleAssocStyle = function(assoc) {
@@ -93,10 +90,6 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
       // Case for placing items with custom cords for the first time
       if(assoc.xCord || assoc.yCord) {
-        // if(!assoc.firstY) {
-        //   assoc.firstY = assoc.yCord;
-        //   assoc.firstX = assoc.xCord;
-        // }
         result['left'] = assoc.xCord + 'px';
         result['top'] = assoc.yCord + 'px';
         result['position'] = 'absolute';
@@ -135,6 +128,27 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
     // Checks if the association is a grouping object (folder) or not
     $scope.isGrouping = function(assoc) {
       return assoc.isGrouping;
+    };
+
+    // Handles the editing of pictures called on a right click of 
+    // an association
+    $scope.handleBackgroundEdit = function() {
+
+    	// Fetch the currentURL if there is one, or else just show an example URL
+    	var currentURL;
+    	if($scope.selectedAssoc.customPicture) {
+    		currentURL = $scope.selectedAssoc.customPicture;
+    	} else {
+    		currentURL = "http://example.com/image.jpg";
+    	}
+
+    	var input = prompt("Please enter the URL of an image", currentURL);
+    	
+    	// Save the new URL if they clicked okay
+    	if(input != null) {
+    		$scope.selectedAssoc.customPicture = input;
+			$scope.save();
+		}
     };
 
     // Only one association is ever selected at a time. It has the boolean
@@ -181,12 +195,6 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
         onmove: dragMoveListener,
         // call this function on every dragend event
         onend: function (event) {
-          // var xCord = event.target.getAttribute('data-x');
-          // var yCord = event.target.getAttribute('data-y');
-
-          // var xCord = event.target.offsetLeft;
-          // var yCord = event.target.offsetTop;
-
           var rect = getOffsetRect(event.target);
           $scope.offsetLeft = 'Offset left: ' + rect.left;
           $scope.offsetTop = 'Offset top: ' + rect.top;
@@ -205,7 +213,7 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
       .on('tap', function (event) {
         var guid = event.target.getAttribute('data-guid');
         if(event.button != 2) {
-          $scope.navigate(guid);
+       		$scope.navigate(guid);
         }
         
       });
