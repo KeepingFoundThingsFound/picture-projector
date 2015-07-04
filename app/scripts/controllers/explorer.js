@@ -98,6 +98,13 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
       return result;
     };
 
+    $scope.showDisplayText = function(assoc) {
+      if(!assoc.customPicture) {
+        return assoc.displayText.substring(0,12);
+      }
+    };
+
+
     // Deletes the given association
     $scope.deleteAssoc = function(guid) {
       itemMirror.deleteAssociation(guid).
