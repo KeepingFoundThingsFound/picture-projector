@@ -70,7 +70,7 @@ body {
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
-    max-width: 730px;
+    max-width: 1080px;
   }
 
   /* Remove the padding we set earlier */
@@ -98,7 +98,7 @@ Drag and drop file explorer
 #canvas {
   position: relative;
   display: block;
-  width: 100%;
+  width: 1080px;
   min-height: 500px;
   margin: auto;
   background: #E6E6E6;
