@@ -20,7 +20,7 @@ angular.module('pictureProjectorApp')
     // This overrides the default redirection method, and seems to be the only
     // way to get it working with Angular
     dropboxClient.authDriver(new Dropbox.AuthDriver.Popup({
-      // Live site: receiverUrl: 'https://keepingfoundthingsfound.com/itemmirror/apps/picture-projector/misc/oauth_reciever.html'
+      //receiverUrl: 'https://keepingfoundthingsfound.com/itemmirror/apps/picture-projector/misc/oauth_reciever.html'
       receiverUrl: 'http://localhost:9000/misc/oauth_reciever.html'
     }));
 

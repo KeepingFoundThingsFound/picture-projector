@@ -19,6 +19,9 @@ app.config(['growlProvider', function (growlProvider) {
 // Main controller for the explorer app
 app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
+  // Variable to store the highest zIndex association
+  var highestZIndex = 0;
+
   // Set to false after printing associations for the first time
   var firstTransform = true;
   $scope.repeatEnd = function() {
@@ -57,16 +60,26 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
     // Organizes the associations into two groups/arrays, 
     // groupingItems and notGroupingItems.
+    // Also concurrently finds the association with the highest zIndex
     function getGroupingItems() {
       $scope.groupingItems = [];
       $scope.notGroupingItems = [];
       for(var i = 0; i < itemMirror.associations.length; i++) {
         var assoc = itemMirror.associations[i];
+        setHighestZIndex(assoc);
         if(assoc.isGrouping) {
           $scope.groupingItems.push(assoc);
         } else {
           $scope.notGroupingItems.push(assoc);
         }
+      }
+    }
+
+    // Checks to see if we have a new highest zIndex.
+    // Sets the highest zIndex to it if so
+    function setHighestZIndex(assoc) {
+      if(assoc.zIndex > highestZIndex) {
+        highestZIndex = assoc.zIndex;
       }
     }
 
@@ -92,12 +105,15 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
       if(assoc.xCord || assoc.yCord) {
         result['left'] = assoc.xCord + 'px';
         result['top'] = assoc.yCord + 'px';
+        result['zIndex'] = assoc.zIndex;
         result['position'] = 'absolute';
       }
 
       return result;
     };
 
+    // Handles the showing of displayText for an association, only shows the displayText
+    // if the association does not already have a customPicture.
     $scope.showDisplayText = function(assoc) {
       if(!assoc.customPicture) {
         return assoc.displayText.substring(0,12);
@@ -208,6 +224,7 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
           $scope.selectedAssoc.xCord = rect.left;
           $scope.selectedAssoc.yCord = rect.top;
+          $scope.selectedAssoc.zIndex = highestZIndex;
 
           $scope.selectedAssoc.moved = true;
 
@@ -235,6 +252,10 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
         target.style.webkitTransform =
         target.style.transform =
           'translate(' + x + 'px, ' + y + 'px)';
+
+        // Bring the element to overlap other elements using zIndex
+        highestZIndex++;
+        target.style.zIndex = highestZIndex;
 
         // update the position attributes
         target.setAttribute('data-x', x);
