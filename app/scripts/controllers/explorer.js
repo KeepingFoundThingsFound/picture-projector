@@ -180,7 +180,10 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
     // Always the parent in our case
     $scope.previous = function() {
       itemMirror.previous().
-      then(assocScopeUpdate);
+      then(assocScopeUpdate).
+      then(function() {
+        $scope.mirrorStack.pop();
+      });
     };
 
     // Saves the current associations and their attributes
