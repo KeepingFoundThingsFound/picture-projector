@@ -10,9 +10,12 @@
 
 </div>
 <div growl></div>
+
+<div id="breadcrumbs" ng-repeat="mirror in mirrorStack"><a ng-click="navigate({{'mirror.guid'}})">{{mirror.displayName}}</a> <p class="spacer"> > </p> </div>
+<div class="clear"></div>
 <div id="canvas">
 
-	<div ng-repeat="assoc in groupingItems" repeat-end="repeatEnd()" back-img="{{assoc.customPicture}}" data-guid="{{assoc.guid}}" data-toggle="tooltip" title="{{assoc.displayText}}" context-menu data-target="menu-{{ $index }}" ng-mousedown="handleAssocSelect(assoc)" class="folder draggable panel-default position-fixed" ng-style="::handleAssocStyle(assoc)"><p data-guid="{{assoc.guid}}">
+	<div ng-repeat="assoc in groupingItems" repeat-end="repeatEnd()" back-img="{{assoc.customPicture}}" data-displayName="{{assoc.displayName}}" data-guid="{{assoc.guid}}" data-toggle="tooltip" title="{{assoc.displayText}}" context-menu data-target="menu-{{ $index }}" ng-mousedown="handleAssocSelect(assoc)" class="folder draggable panel-default position-fixed" ng-style="::handleAssocStyle(assoc)"><p data-guid="{{assoc.guid}}">
 	{{showDisplayText(assoc)}}</p>
 
 		<div class="dropdown position-fixed" id="menu-{{ $index }}">

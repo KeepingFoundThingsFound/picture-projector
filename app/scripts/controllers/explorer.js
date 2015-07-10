@@ -22,6 +22,10 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
   // Variable to store the highest zIndex association
   var highestZIndex = 0;
 
+  // Stores the associations to be used as breadcrumb navigation
+  $scope.breadcrumbs = [];
+  $scope.mirrorStack = [];
+
   // Set to false after printing associations for the first time
   var firstTransform = true;
   $scope.repeatEnd = function() {
@@ -48,6 +52,7 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
   init.then(function() {
     $scope.mirror = itemMirror;
     $scope.associations = itemMirror.associations;
+    $scope.mirrorStack.push(new mirrorStackObject("", $scope.mirror.displayName));
     getGroupingItems();
 
     // This needs to be called after the service updates the associations.
@@ -56,6 +61,37 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
     function assocScopeUpdate() {
       $scope.associations = itemMirror.associations;
       getGroupingItems();
+    }
+
+    function handleBreadcrumbStack(inputGUID) {
+      // Check if we currently have the guid in the stack
+      // which means we've already visited this mirror and
+      // it's currently in storage.
+      var guidExists = false;
+      var indexOf;
+      for(var i = 0; i < $scope.mirrorStack.length; i++) {
+        if($scope.mirrorStack[i].guid == inputGUID) {
+          guidExists = true;
+          indexOf = i;
+        }
+      };
+
+      if(guidExists) {
+        // Calculate the number of breadcrumbs to pop from the stack
+        var numToPop = ($scope.mirrorStack.length - 1) - indexOf;
+        for(var i = 0; i < numToPop; i++) {
+          $scope.mirrorStack.pop();
+        }
+      } else {
+        // Navigating to a new mirror, so add it to the stack
+        var newMirrorStackObject = new mirrorStackObject(inputGUID, $scope.mirror.displayName);
+        $scope.mirrorStack.push(newMirrorStackObject);
+      }
+    }
+
+    function mirrorStackObject(inputGUID, inputDisplayName) {
+        this.guid = inputGUID;
+        this.displayName = inputDisplayName;
     }
 
     // Organizes the associations into two groups/arrays, 
@@ -85,10 +121,22 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
 
     // Navigates to the requested guid
     $scope.navigate = function(guid) {
+    // Navigate to the requested guid
 		itemMirror.navigateMirror(guid).
-		then(assocScopeUpdate);
+  		then(assocScopeUpdate).
+      then(function() {
+        handleBreadcrumbStack(guid);
+      });
     };
 
+    $scope.printMirrorStack = function() {
+      var result;
+      for(var i = 0; i < $scope.mirrorStack.length; i++) {
+        result += "hello" + $scope.mirrorStack[i].displayText;
+      }
+
+      return result;
+    }
     // Selects the sent association to be later edited
     $scope.handleAssocSelect = function(assoc) {
         $scope.select(assoc);
@@ -138,7 +186,6 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
     // Saves the current associations and their attributes
     $scope.save = function() {
       itemMirror.save().
-      // then(assocScopeUpdate).
       then(savedGrowl);
     };
 

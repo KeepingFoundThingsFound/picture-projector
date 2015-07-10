@@ -144,8 +144,29 @@ Drag and drop file explorer
   DROPDOWN
   ***/
 .dropdown {
-  z-index: 9999;
+  z-index: 99999;
 }
+
+
+/***
+  BREADCRUMBS
+    ***/
+
+#breadcrumbs a {
+  float: left;
+}
+
+#breadcrumbs a:hover {
+  cursor: hand;
+}
+#breadcrumbs p.spacer {
+  float:left;
+}
+
+.clear {
+  clear: both;
+}
+
 
 /***
   SPINNER

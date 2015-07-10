@@ -26,7 +26,7 @@ angular.module('pictureProjectorApp')
     // lookup mirrors that have been previously constructed and set
     // the mirror rather than constructing a completely new object
     // each time. Very useful for navigation.
-    var mirrors;
+    var mirrors = {};
 
     // This variable is an array of wrappers that can be used for data
     // binding associations. For two-way data-binding, a get and set
@@ -43,12 +43,6 @@ angular.module('pictureProjectorApp')
     // core item mirror attributes and namespace attributes.
     function assocWrapper(guid) {
 
-      var result = mirror.getAssociationNamespaceAttribute('cords', guid, 'picture-projector');
-      var cords = result ? JSON.parse(result) : {};
-      function saveCords() {
-        mirror.setAssociationNamespaceAttribute('cords', JSON.stringify(tags), guid, 'picture-projector');
-      }
-
       return {
         guid: guid,
         get displayText(){ return mirror.getAssociationDisplayText(guid); },
@@ -58,7 +52,7 @@ angular.module('pictureProjectorApp')
         isGrouping: mirror.isAssociationAssociatedItemGrouping(guid),
         isPhantom: mirror.isAssociationPhantom(guid),
 
-        // Simple plain text attribute that stores an image for a given association
+        // Simple plain text attributes that store various stylings for associations
         get customPicture(){ return mirror.getAssociationNamespaceAttribute('picture', guid, 'picture-projector'); },
         set customPicture(picture){ mirror.setAssociationNamespaceAttribute('picture', picture, guid, 'picture-projector'); },
 
@@ -71,22 +65,6 @@ angular.module('pictureProjectorApp')
         get zIndex(){ return mirror.getAssociationNamespaceAttribute('zIndex', guid, 'picture-projector'); },
         set zIndex(newIndex){ mirror.setAssociationNamespaceAttribute('zIndex', newIndex, guid, 'picture-projector'); },
 
-        // These functions are all dealing with the private variable tags. This gives us a way to add,
-        // delete, and list tags with an attribute. Internally these are represented as JSON and then these
-        // methods are given to the associations to allow for easy manipulation as a directive.
-        addCord: function(cord) {
-          cords[cord] = true;
-          saveTags();
-        },
-
-        deleteCord: function(cord) {
-          delete tags[tag];
-          saveTags();
-        },
-
-        listCords: function() {
-          return Object.keys(cords);
-        }
       };
     }
 
@@ -98,7 +76,7 @@ angular.module('pictureProjectorApp')
     // associations can be created or deleted in bulk
     function updateAssociations() {
       console.log('updating associations');
-      associations = mirror.listAssociations().map(function(guid) {
+      associations = mirror.listAssociations().map(function(guid)  {
         return assocWrapper(guid);
       });
     }
@@ -163,7 +141,7 @@ angular.module('pictureProjectorApp')
         console.log(error);
         if (error) { deferred.reject(error); }
         else {
-          mirrors.push(newMirror);
+          mirrors[guid] = newMirror;
           mirror = newMirror;
           updateAssociations();
           console.log('assocs updated');
@@ -252,11 +230,17 @@ angular.module('pictureProjectorApp')
       navigateMirror: function(guid) {
         var deferred = $q.defer();
 
-        var mirrorURIs = mirrors.map(function(mirror) { return mirror.getURIforItemDescribed(); });
-        var associatedItem = mirror.getAssociationAssociatedItem(guid);
-        var exists = mirrorURIs.some(function(uri) { return uri === associatedItem; });
-        if (exists) {
-          mirror = mirrors[ mirrorURIs.indexOf(associatedItem) ];
+        // var mirrorURIs = mirrors.map(function(mirror) { return mirror.getURIforItemDescribed(); });
+        // var associatedItem = mirror.getAssociationAssociatedItem(guid);
+        // var exists = mirrorURIs.some(function(uri) { return uri === associatedItem; });
+
+        // Empty home case
+        if(guid == "") {
+          mirror = mirrors["home"];
+          updateAssociations();
+          deferred.resolve();
+        } else if (guid in mirrors) {
+          mirror = mirrors[guid];
           updateAssociations();
           deferred.resolve();
         } else {
@@ -310,7 +294,7 @@ angular.module('pictureProjectorApp')
         then(constructRootMirror).
         then(function(rootMirror) {
           mirror = rootMirror;
-          mirrors = [rootMirror];
+          mirrors["home"] = rootMirror;
           updateAssociations();
         }),
 
