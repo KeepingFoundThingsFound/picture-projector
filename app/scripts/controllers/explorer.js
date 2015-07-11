@@ -303,9 +303,13 @@ app.controller('ExplorerCtrl', function ($scope, growl, itemMirror) {
         target.style.transform =
           'translate(' + x + 'px, ' + y + 'px)';
 
-        // Bring the element to overlap other elements using zIndex
-        highestZIndex++;
-        target.style.zIndex = highestZIndex;
+        // Bring the element to overlap other elements using zIndex if it's
+        // not already the element with the highest z-index
+        if(target.style.zIndex < highestZIndex) {
+          highestZIndex++;
+          target.style.zIndex = highestZIndex;
+        }
+        
 
         // update the position attributes
         target.setAttribute('data-x', x);
