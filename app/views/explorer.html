@@ -15,10 +15,10 @@
 <div class="clear"></div>
 <div id="canvas">
 
-	<div ng-repeat="assoc in groupingItems" repeat-end="repeatEnd()" back-img="{{assoc.customPicture}}" data-displayName="{{assoc.displayName}}" data-guid="{{assoc.guid}}" data-toggle="tooltip" title="{{assoc.displayText}}" context-menu data-target="menu-{{ $index }}" ng-mousedown="handleAssocSelect(assoc)" class="folder draggable panel-default position-fixed" ng-style="::handleAssocStyle(assoc)"><p data-guid="{{assoc.guid}}">
+	<div id={{showDisplayText(assoc)}} ng-repeat="assoc in groupingItems" repeat-end="repeatEnd()" back-img="{{assoc.customPicture}}" data-displayName="{{assoc.displayName}}" data-guid="{{assoc.guid}}" data-toggle="tooltip" title="{{assoc.displayText}}" context-menu data-target="menu-{{ $index }}" ng-mousedown="handleAssocSelect(assoc)" class="folder draggable panel-default position-fixed" ng-style="::handleAssocStyle(assoc)"><p data-guid="{{assoc.guid}}">
 	{{showDisplayText(assoc)}}</p>
 
-		<div class="dropdown position-fixed" id="menu-{{ $index }}">
+		<div class="dropdown" id="menu-{{ $index }}">
 			<ul class="dropdown-menu" role="menu">
 				<li class="set-background">
 					<a class="pointer" role="menuitem" tabindex="1"
