@@ -52,6 +52,9 @@ angular.module('pictureProjectorApp')
         isGrouping: mirror.isAssociationAssociatedItemGrouping(guid),
         isPhantom: mirror.isAssociationPhantom(guid),
 
+        get startingPoint() { return mirror.getFragmentNamespaceAttribute('startingPoint', 'picture-projector'); },
+        set startingPoint(path) { mirror.setFragmentNamespaceAttribute('startingPoint', path, 'picture-projector'); },
+
         // Simple plain text attributes that store various stylings for associations
         get customPicture(){ return mirror.getAssociationNamespaceAttribute('picture', guid, 'picture-projector'); },
         set customPicture(picture){ mirror.setAssociationNamespaceAttribute('picture', picture, guid, 'picture-projector'); },
